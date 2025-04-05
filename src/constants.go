@@ -19,7 +19,8 @@ var (
 )
 
 var (
-	RESOURCE_BGR_KEY = 0
+	RESOURCE_BGR_KEY           = 0
+	RESOURCE_CIRCLE_YELLOW_KEY = 1
 )
 
 var (

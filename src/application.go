@@ -16,6 +16,7 @@ type Application struct {
 	joysticks          [16]*sdl.Joystick
 	pressedKeysCodes   mapset.Set[sdl.Keycode]
 	pressedButtonCodes mapset.Set[uint8]
+	axisValues         [4]float32
 	lastPressedKey     sdl.Keycode
 	isRunning          *abool.AtomicBool
 	backgroundColor    sdl.Color
@@ -66,7 +67,10 @@ func (app *Application) UpdateEvents() {
 		case *sdl.JoyAxisEvent:
 			// Convert the value to a -1.0 - 1.0 range
 			value := float32(t.Value) / 32768.0
+			print(t.Axis)
+			print(" : ")
 			println(value)
+			app.axisValues[t.Axis] = value
 			break
 
 		case *sdl.JoyButtonEvent:
@@ -137,9 +141,20 @@ func (app *Application) UpdateView() {
 	if err := app.sdlRenderer.Copy(app.resources[RESOURCE_BGR_KEY].T, nil, &sdl.Rect{X: 0, Y: 0, W: int32(app.settings.WindowWidth), H: int32(app.settings.WindowHeight)}); err != nil {
 		println(err.Error())
 	}
+	if app.pressedKeysCodes.Contains(sdl.K_l) || (app.axisValues[0] != 0 || app.axisValues[1] != 0) {
+		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CIRCLE_YELLOW_KEY].T, nil, &sdl.Rect{X: 245, Y: 377, W: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].W, H: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].H}); err != nil {
+			println(err.Error())
+		}
+	}
+	if app.pressedKeysCodes.Contains(sdl.K_r) || (app.axisValues[2] != 0 || app.axisValues[3] != 0) {
+		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CIRCLE_YELLOW_KEY].T, nil, &sdl.Rect{X: 381, Y: 378, W: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].W, H: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].H}); err != nil {
+			println(err.Error())
+		}
+	}
 	app.sdlRenderer.Present()
 }
 
 func (app *Application) initResources() {
 	app.resources[RESOURCE_BGR_KEY] = LoadSurfTexture("r36s_blue.png", app.sdlRenderer)
+	app.resources[RESOURCE_CIRCLE_YELLOW_KEY] = LoadSurfTexture("circle_yellow.png", app.sdlRenderer)
 }
