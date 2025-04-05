@@ -17,3 +17,12 @@ var (
 	COLOR_BLUE   = sdl.Color{R: 0, G: 255, B: 255, A: 255}
 	COLOR_BLACK  = sdl.Color{R: 0, G: 0, B: 0, A: 255}
 )
+
+var (
+	RESOURCE_BGR_KEY = 0
+)
+
+var (
+	BUTTON_CODE_SELECT = uint8(16)
+	BUTTON_CODE_START  = uint8(13)
+)
