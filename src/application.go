@@ -72,6 +72,7 @@ func (app *Application) UpdateEvents() {
 
 		case *sdl.JoyButtonEvent:
 			if t.State == sdl.PRESSED {
+				println(t.Button)
 				app.pressedButtonCodes.Add(t.Button)
 			} else {
 				app.pressedButtonCodes.Remove(t.Button)
@@ -138,15 +139,16 @@ func (app *Application) UpdateView() {
 	if err := app.sdlRenderer.Copy(app.resources[RESOURCE_BGR_KEY].T, nil, &sdl.Rect{X: 0, Y: 0, W: int32(app.settings.WindowWidth), H: int32(app.settings.WindowHeight)}); err != nil {
 		println(err.Error())
 	}
-	app.renderJoystick(245, 377, app.axisValues[0], app.axisValues[1], sdl.K_l)
-	app.renderJoystick(381, 378, app.axisValues[2], app.axisValues[3], sdl.K_r)
+	app.renderJoystick(BUTTON_CODE_LEFT_JOYSTICK, 245, 377, app.axisValues[0], app.axisValues[1], sdl.K_l)
+	app.renderJoystick(BUTTON_CODE_RIGHT_JOYSTICK, 381, 378, app.axisValues[2], app.axisValues[3], sdl.K_r)
 	app.sdlRenderer.Present()
 }
 
-func (app *Application) renderJoystick(posX, posY int32, axisX, axisY float32, debugKeyCode sdl.Keycode) {
-	if app.pressedKeysCodes.Contains(debugKeyCode) || (axisX != 0 || axisY != 0) {
-		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CIRCLE_YELLOW_KEY].T, nil,
-			&sdl.Rect{X: posX, Y: posY, W: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].W, H: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].H}); err != nil {
+func (app *Application) renderJoystick(joystickButtonCode uint8, posX, posY int32, axisX, axisY float32, debugKeyCode sdl.Keycode) {
+	if app.pressedKeysCodes.Contains(debugKeyCode) || (axisX != 0 || axisY != 0) || app.pressedButtonCodes.Contains(joystickButtonCode) {
+		resourceCircleKey := If(app.pressedButtonCodes.Contains(joystickButtonCode), RESOURCE_CIRCLE_RED_KEY, RESOURCE_CIRCLE_YELLOW_KEY)
+		if err := app.sdlRenderer.Copy(app.resources[resourceCircleKey].T, nil,
+			&sdl.Rect{X: posX, Y: posY, W: app.resources[resourceCircleKey].W, H: app.resources[resourceCircleKey].H}); err != nil {
 			println(err.Error())
 		}
 		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CROSS_YELLOW_KEY].T, nil,
@@ -164,4 +166,5 @@ func (app *Application) initResources() {
 	app.resources[RESOURCE_BGR_KEY] = LoadSurfTexture("r36s_blue.png", app.sdlRenderer)
 	app.resources[RESOURCE_CIRCLE_YELLOW_KEY] = LoadSurfTexture("circle_yellow.png", app.sdlRenderer)
 	app.resources[RESOURCE_CROSS_YELLOW_KEY] = LoadSurfTexture("cross_yellow.png", app.sdlRenderer)
+	app.resources[RESOURCE_CIRCLE_RED_KEY] = LoadSurfTexture("circle_red.png", app.sdlRenderer)
 }
