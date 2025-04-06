@@ -18,21 +18,22 @@ var (
 	COLOR_BLACK  = sdl.Color{R: 0, G: 0, B: 0, A: 255}
 )
 
-var (
-	RESOURCE_BGR_KEY           = 0
-	RESOURCE_CIRCLE_YELLOW_KEY = 1
-	RESOURCE_CROSS_YELLOW_KEY  = 2
-	RESOURCE_CIRCLE_RED_KEY    = 3
+const (
+	RESOURCE_BGR_KEY           = iota
+	RESOURCE_CIRCLE_YELLOW_KEY = iota
+	RESOURCE_CROSS_YELLOW_KEY  = iota
+	RESOURCE_CIRCLE_RED_KEY    = iota
 )
 
-var (
+const (
+	BUTTON_CODE_FN             = uint8(12)
 	BUTTON_CODE_START          = uint8(13)
 	BUTTON_CODE_LEFT_JOYSTICK  = uint8(14)
 	BUTTON_CODE_RIGHT_JOYSTICK = uint8(15)
 	BUTTON_CODE_SELECT         = uint8(16)
 )
 
-var (
+const (
 	SCREEN_LEFT_UP_X    = int32(235)
 	SCREEN_LEFT_UP_Y    = int32(130)
 	SCREEN_RIGHT_DOWN_X = int32(400)

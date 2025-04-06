@@ -17,7 +17,6 @@ type Application struct {
 	pressedKeysCodes   mapset.Set[sdl.Keycode]
 	pressedButtonCodes mapset.Set[uint8]
 	axisValues         [4]float32
-	lastPressedKey     sdl.Keycode
 	isRunning          *abool.AtomicBool
 	backgroundColor    sdl.Color
 }
@@ -97,7 +96,6 @@ func (app *Application) UpdateEvents() {
 			if t.Repeat > 0 {
 				break
 			}
-			app.lastPressedKey = t.Keysym.Sym
 			if t.State == sdl.PRESSED {
 				app.pressedKeysCodes.Add(t.Keysym.Sym)
 			} else { // if t.State == sdl.RELEASED {
