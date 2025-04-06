@@ -67,9 +67,6 @@ func (app *Application) UpdateEvents() {
 		case *sdl.JoyAxisEvent:
 			// Convert the value to a -1.0 - 1.0 range
 			value := float32(t.Value) / 32768.0
-			print(t.Axis)
-			print(" : ")
-			println(value)
 			app.axisValues[t.Axis] = value
 			break
 
@@ -141,20 +138,30 @@ func (app *Application) UpdateView() {
 	if err := app.sdlRenderer.Copy(app.resources[RESOURCE_BGR_KEY].T, nil, &sdl.Rect{X: 0, Y: 0, W: int32(app.settings.WindowWidth), H: int32(app.settings.WindowHeight)}); err != nil {
 		println(err.Error())
 	}
-	if app.pressedKeysCodes.Contains(sdl.K_l) || (app.axisValues[0] != 0 || app.axisValues[1] != 0) {
-		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CIRCLE_YELLOW_KEY].T, nil, &sdl.Rect{X: 245, Y: 377, W: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].W, H: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].H}); err != nil {
-			println(err.Error())
-		}
-	}
-	if app.pressedKeysCodes.Contains(sdl.K_r) || (app.axisValues[2] != 0 || app.axisValues[3] != 0) {
-		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CIRCLE_YELLOW_KEY].T, nil, &sdl.Rect{X: 381, Y: 378, W: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].W, H: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].H}); err != nil {
-			println(err.Error())
-		}
-	}
+	app.renderJoystick(245, 377, app.axisValues[0], app.axisValues[1], sdl.K_l)
+	app.renderJoystick(381, 378, app.axisValues[2], app.axisValues[3], sdl.K_r)
 	app.sdlRenderer.Present()
+}
+
+func (app *Application) renderJoystick(posX, posY int32, axisX, axisY float32, debugKeyCode sdl.Keycode) {
+	if app.pressedKeysCodes.Contains(debugKeyCode) || (axisX != 0 || axisY != 0) {
+		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CIRCLE_YELLOW_KEY].T, nil,
+			&sdl.Rect{X: posX, Y: posY, W: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].W, H: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].H}); err != nil {
+			println(err.Error())
+		}
+		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CROSS_YELLOW_KEY].T, nil,
+			&sdl.Rect{
+				X: SCREEN_LEFT_UP_X + SCREEN_WIDTH/2 + int32(float32(SCREEN_WIDTH/2)*axisX),
+				Y: SCREEN_LEFT_UP_Y + SCREEN_HEIGHT/2 + int32(float32(SCREEN_HEIGHT/2)*axisY),
+				W: app.resources[RESOURCE_CROSS_YELLOW_KEY].W,
+				H: app.resources[RESOURCE_CROSS_YELLOW_KEY].H}); err != nil {
+			println(err.Error())
+		}
+	}
 }
 
 func (app *Application) initResources() {
 	app.resources[RESOURCE_BGR_KEY] = LoadSurfTexture("r36s_blue.png", app.sdlRenderer)
 	app.resources[RESOURCE_CIRCLE_YELLOW_KEY] = LoadSurfTexture("circle_yellow.png", app.sdlRenderer)
+	app.resources[RESOURCE_CROSS_YELLOW_KEY] = LoadSurfTexture("cross_yellow.png", app.sdlRenderer)
 }
