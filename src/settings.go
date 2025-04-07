@@ -8,15 +8,6 @@ import (
 	"strconv"
 )
 
-type Settings struct {
-	WindowWidth        int
-	WindowHeight       int
-	WindowPosX         int
-	WindowPosY         int
-	WindowState        int
-	WindowDisplayIndex int
-}
-
 const (
 	propDirName           = "/.r36s/"
 	propFileName          = "r36s.properties"
@@ -27,6 +18,15 @@ const (
 	KeyWindowState        = "WindowState"
 	KeyWindowDisplayIndex = "WindowDisplayIndex"
 )
+
+type Settings struct {
+	WindowWidth        int
+	WindowHeight       int
+	WindowPosX         int
+	WindowPosY         int
+	WindowState        int
+	WindowDisplayIndex int
+}
 
 func (settings *Settings) Save(wnd *sdl.Window) {
 	var (
@@ -71,13 +71,21 @@ END:
 
 func NewSettings() *Settings {
 	var (
-		settings         = &Settings{}
-		props            = properties.NewProperties()
-		userHomeDir      string
-		displayMode, err = sdl.GetDesktopDisplayMode(0)
-		screenWidth      = int(displayMode.W)
-		screenHeight     = int(displayMode.H)
+		settings     = &Settings{}
+		props        = properties.NewProperties()
+		userHomeDir  string
+		displayMode  sdl.DisplayMode
+		screenWidth  = 640
+		screenHeight = 480
+		err          error
 	)
+	if displayMode, err = sdl.GetDesktopDisplayMode(0); err != nil {
+		println(err.Error())
+		os.Exit(1)
+	} else {
+		screenWidth = int(displayMode.W)
+		screenHeight = int(displayMode.H)
+	}
 	if userHomeDir, err = os.UserHomeDir(); err == nil {
 		if props, err = properties.LoadFile(userHomeDir+propDirName+propFileName, properties.UTF8); err != nil {
 			log.Println(err)

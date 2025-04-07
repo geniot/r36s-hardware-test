@@ -1,6 +1,6 @@
 PROGRAM_NAME := r36s-hardware-test
 DEPLOY_PATH := /roms/native
-IP := 192.168.0.105
+IP := 192.168.0.106
 USN := ark
 PWD := ark
 

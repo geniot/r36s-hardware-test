@@ -1,10 +1,21 @@
 package main
 
-import "github.com/veandco/go-sdl2/sdl"
+import (
+	"embed"
+	"github.com/veandco/go-sdl2/sdl"
+)
+
+type ButtonCode = uint8
+type ResourceKey = int
 
 const (
 	APP_NAME    = "R36S Hardware Test"
 	APP_VERSION = "0.1"
+)
+
+var (
+	//go:embed media/*
+	mediaList embed.FS
 )
 
 var (
@@ -16,21 +27,23 @@ var (
 	COLOR_YELLOW = sdl.Color{R: 255, G: 255, B: 0, A: 255}
 	COLOR_BLUE   = sdl.Color{R: 0, G: 255, B: 255, A: 255}
 	COLOR_BLACK  = sdl.Color{R: 0, G: 0, B: 0, A: 255}
+
+	BACKGROUND_COLOR = COLOR_BLACK
 )
 
 const (
-	RESOURCE_BGR_KEY           = iota
-	RESOURCE_CIRCLE_YELLOW_KEY = iota
-	RESOURCE_CROSS_YELLOW_KEY  = iota
-	RESOURCE_CIRCLE_RED_KEY    = iota
+	RESOURCE_BGR_KEY           = ResourceKey(iota)
+	RESOURCE_CIRCLE_YELLOW_KEY = ResourceKey(iota)
+	RESOURCE_CROSS_YELLOW_KEY  = ResourceKey(iota)
+	RESOURCE_CIRCLE_RED_KEY    = ResourceKey(iota)
 )
 
 const (
-	BUTTON_CODE_FN             = uint8(12)
-	BUTTON_CODE_START          = uint8(13)
-	BUTTON_CODE_LEFT_JOYSTICK  = uint8(14)
-	BUTTON_CODE_RIGHT_JOYSTICK = uint8(15)
-	BUTTON_CODE_SELECT         = uint8(16)
+	BUTTON_CODE_FN             = ButtonCode(12)
+	BUTTON_CODE_START          = ButtonCode(13)
+	BUTTON_CODE_LEFT_JOYSTICK  = ButtonCode(14)
+	BUTTON_CODE_RIGHT_JOYSTICK = ButtonCode(15)
+	BUTTON_CODE_SELECT         = ButtonCode(16)
 )
 
 const (
@@ -41,3 +54,5 @@ const (
 	SCREEN_WIDTH        = SCREEN_RIGHT_DOWN_X - SCREEN_LEFT_UP_X
 	SCREEN_HEIGHT       = SCREEN_RIGHT_DOWN_Y - SCREEN_LEFT_UP_Y
 )
+
+var ()

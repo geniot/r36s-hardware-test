@@ -10,24 +10,23 @@ import (
 
 type Application struct {
 	settings           *Settings
-	resources          map[int]*SurfTexture
+	resources          map[ResourceKey]*SurfTexture
 	sdlWindow          *sdl.Window
 	sdlRenderer        *sdl.Renderer
 	joysticks          [16]*sdl.Joystick
 	pressedKeysCodes   mapset.Set[sdl.Keycode]
-	pressedButtonCodes mapset.Set[uint8]
+	pressedButtonCodes mapset.Set[ButtonCode]
 	axisValues         [4]float32
 	isRunning          *abool.AtomicBool
-	backgroundColor    sdl.Color
 }
 
 func NewApplication() *Application {
 	return &Application{
 		pressedKeysCodes:   mapset.NewSet[sdl.Keycode](),
-		pressedButtonCodes: mapset.NewSet[uint8](),
+		pressedButtonCodes: mapset.NewSet[ButtonCode](),
 		isRunning:          abool.New(),
 		resources:          make(map[int]*SurfTexture),
-		backgroundColor:    COLOR_WHITE}
+	}
 }
 
 func (app *Application) Start(args []string) {
@@ -36,7 +35,6 @@ func (app *Application) Start(args []string) {
 		os.Exit(1)
 	}
 	sdl.JoystickEventState(sdl.ENABLE)
-	println("num joysticks: ", sdl.NumJoysticks())
 
 	app.settings = NewSettings()
 	app.sdlWindow, _ = sdl.CreateWindow(
@@ -45,7 +43,7 @@ func (app *Application) Start(args []string) {
 		int32(app.settings.WindowWidth), int32(app.settings.WindowHeight),
 		uint32(app.settings.WindowState))
 	app.sdlRenderer, _ = sdl.CreateRenderer(app.sdlWindow, -1, sdl.RENDERER_PRESENTVSYNC|sdl.RENDERER_ACCELERATED)
-	app.initResources()
+	app.initResources() //should be called after the creation of sdlRenderer
 	app.isRunning.Set()
 	for app.isRunning.IsSet() {
 		app.UpdateEvents()
@@ -117,16 +115,13 @@ func (app *Application) UpdateEvents() {
 }
 
 func (app *Application) UpdatePhysics() {
-	if app.pressedKeysCodes.Contains(sdl.K_q) {
-		app.Stop()
-	}
-	if app.pressedButtonCodes.Contains(BUTTON_CODE_SELECT) && app.pressedButtonCodes.Contains(BUTTON_CODE_START) {
+	if app.pressedKeysCodes.Contains(sdl.K_q) || (app.pressedButtonCodes.Contains(BUTTON_CODE_SELECT) && app.pressedButtonCodes.Contains(BUTTON_CODE_START)) {
 		app.Stop()
 	}
 }
 
 func (app *Application) UpdateView() {
-	if err := app.sdlRenderer.SetDrawColorArray(app.backgroundColor.R, app.backgroundColor.G, app.backgroundColor.B, app.backgroundColor.A); err != nil {
+	if err := app.sdlRenderer.SetDrawColorArray(BACKGROUND_COLOR.R, BACKGROUND_COLOR.G, BACKGROUND_COLOR.B, BACKGROUND_COLOR.A); err != nil {
 		println(err.Error())
 		os.Exit(1)
 	}
@@ -137,18 +132,32 @@ func (app *Application) UpdateView() {
 	if err := app.sdlRenderer.Copy(app.resources[RESOURCE_BGR_KEY].T, nil, &sdl.Rect{X: 0, Y: 0, W: int32(app.settings.WindowWidth), H: int32(app.settings.WindowHeight)}); err != nil {
 		println(err.Error())
 	}
-	app.renderJoystick(BUTTON_CODE_LEFT_JOYSTICK, 245, 377, app.axisValues[0], app.axisValues[1], sdl.K_l)
-	app.renderJoystick(BUTTON_CODE_RIGHT_JOYSTICK, 381, 378, app.axisValues[2], app.axisValues[3], sdl.K_r)
+	app.renderJoystick(BUTTON_CODE_LEFT_JOYSTICK, Reactors[BUTTON_CODE_LEFT_JOYSTICK].OffsetX, Reactors[BUTTON_CODE_LEFT_JOYSTICK].OffsetY, app.axisValues[0], app.axisValues[1], sdl.K_l)
+	app.renderJoystick(BUTTON_CODE_RIGHT_JOYSTICK, Reactors[BUTTON_CODE_RIGHT_JOYSTICK].OffsetX, Reactors[BUTTON_CODE_RIGHT_JOYSTICK].OffsetY, app.axisValues[2], app.axisValues[3], sdl.K_r)
+
+	for val := range app.pressedButtonCodes.Iter() {
+		if Reactors[val] != nil {
+			width := If(Reactors[val].Width == 0, app.resources[Reactors[val].ResourceKey].W, Reactors[val].Width)
+			height := If(Reactors[val].Height == 0, app.resources[Reactors[val].ResourceKey].H, Reactors[val].Height)
+			if err := app.sdlRenderer.Copy(app.resources[Reactors[val].ResourceKey].T, nil,
+				&sdl.Rect{X: Reactors[val].OffsetX, Y: Reactors[val].OffsetY, W: width, H: height}); err != nil {
+				println(err.Error())
+			}
+		}
+	}
 	app.sdlRenderer.Present()
 }
 
-func (app *Application) renderJoystick(joystickButtonCode uint8, posX, posY int32, axisX, axisY float32, debugKeyCode sdl.Keycode) {
-	if app.pressedKeysCodes.Contains(debugKeyCode) || (axisX != 0 || axisY != 0) || app.pressedButtonCodes.Contains(joystickButtonCode) {
-		resourceCircleKey := If(app.pressedButtonCodes.Contains(joystickButtonCode), RESOURCE_CIRCLE_RED_KEY, RESOURCE_CIRCLE_YELLOW_KEY)
-		if err := app.sdlRenderer.Copy(app.resources[resourceCircleKey].T, nil,
-			&sdl.Rect{X: posX, Y: posY, W: app.resources[resourceCircleKey].W, H: app.resources[resourceCircleKey].H}); err != nil {
+func (app *Application) renderJoystick(joystickButtonCode ButtonCode, posX, posY int32, axisX, axisY float32, debugKeyCode sdl.Keycode) {
+	//drawing yellow joystick circles
+	if app.pressedKeysCodes.Contains(debugKeyCode) || (axisX != 0 || axisY != 0) && !app.pressedButtonCodes.Contains(joystickButtonCode) {
+		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CIRCLE_YELLOW_KEY].T, nil,
+			&sdl.Rect{X: posX, Y: posY, W: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].W, H: app.resources[RESOURCE_CIRCLE_YELLOW_KEY].H}); err != nil {
 			println(err.Error())
 		}
+	}
+	//cross-hairs
+	if axisX != 0 || axisY != 0 {
 		if err := app.sdlRenderer.Copy(app.resources[RESOURCE_CROSS_YELLOW_KEY].T, nil,
 			&sdl.Rect{
 				X: SCREEN_LEFT_UP_X + SCREEN_WIDTH/2 + int32(float32(SCREEN_WIDTH/2)*axisX),

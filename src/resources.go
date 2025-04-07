@@ -1,15 +1,9 @@
 package main
 
 import (
-	"embed"
 	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
 	"io/fs"
-)
-
-var (
-	//go:embed media/*
-	mediaList embed.FS
 )
 
 type SurfTexture struct {
@@ -18,6 +12,29 @@ type SurfTexture struct {
 	T *sdl.Texture
 	S *sdl.Surface
 }
+
+type ImageDescriptor struct {
+	OffsetX     int32
+	OffsetY     int32
+	Width       int32
+	Height      int32
+	ResourceKey ResourceKey
+}
+
+var (
+	Reactors = map[ButtonCode]*ImageDescriptor{
+		BUTTON_CODE_LEFT_JOYSTICK: {
+			OffsetX:     245,
+			OffsetY:     377,
+			ResourceKey: RESOURCE_CIRCLE_RED_KEY,
+		},
+		BUTTON_CODE_RIGHT_JOYSTICK: {
+			OffsetX:     381,
+			OffsetY:     378,
+			ResourceKey: RESOURCE_CIRCLE_RED_KEY,
+		},
+	}
+)
 
 func GetImage(fileName string) *sdl.RWops {
 	file, _ := mediaList.Open("media/" + fileName)
@@ -28,7 +45,9 @@ func GetResource(file fs.File) *sdl.RWops {
 	stat, _ := file.Stat()
 	size := stat.Size()
 	buf := make([]byte, size)
-	file.Read(buf)
+	if _, err := file.Read(buf); err != nil {
+		println(err.Error())
+	}
 	rwOps, _ := sdl.RWFromMem(buf)
 	return rwOps
 }
