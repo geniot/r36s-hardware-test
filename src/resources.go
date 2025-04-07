@@ -21,21 +21,6 @@ type ImageDescriptor struct {
 	ResourceKey ResourceKey
 }
 
-var (
-	Reactors = map[ButtonCode]*ImageDescriptor{
-		BUTTON_CODE_LEFT_JOYSTICK: {
-			OffsetX:     245,
-			OffsetY:     377,
-			ResourceKey: RESOURCE_CIRCLE_RED_KEY,
-		},
-		BUTTON_CODE_RIGHT_JOYSTICK: {
-			OffsetX:     381,
-			OffsetY:     378,
-			ResourceKey: RESOURCE_CIRCLE_RED_KEY,
-		},
-	}
-)
-
 func GetImage(fileName string) *sdl.RWops {
 	file, _ := mediaList.Open("media/" + fileName)
 	return GetResource(file)

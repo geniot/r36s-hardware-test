@@ -55,4 +55,18 @@ const (
 	SCREEN_HEIGHT       = SCREEN_RIGHT_DOWN_Y - SCREEN_LEFT_UP_Y
 )
 
-var ()
+var (
+	Reactors = map[ButtonCode]*ImageDescriptor{
+		BUTTON_CODE_LEFT_JOYSTICK: {
+			OffsetX:     245,
+			OffsetY:     377,
+			Width:       10,
+			ResourceKey: RESOURCE_CIRCLE_RED_KEY,
+		},
+		BUTTON_CODE_RIGHT_JOYSTICK: {
+			OffsetX:     381,
+			OffsetY:     378,
+			ResourceKey: RESOURCE_CIRCLE_RED_KEY,
+		},
+	}
+)
