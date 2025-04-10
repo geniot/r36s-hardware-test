@@ -66,7 +66,7 @@ func main() {
 	defer sdl.Quit()
 	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED,
 		sdl.WINDOWPOS_UNDEFINED,
-		winWidth, winHeight, sdl.WINDOW_OPENGL)
+		winWidth, winHeight, sdl.WINDOW_OPENGL|sdl.WINDOW_FULLSCREEN)
 	if err != nil {
 		panic(err)
 	}
