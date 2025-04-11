@@ -24,6 +24,7 @@ func main() {
 
 	sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
 	sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 2)
+	sdl.GLSetAttribute(sdl.GL_CONTEXT_PROFILE_MASK, sdl.GL_CONTEXT_PROFILE_COMPATIBILITY)
 
 	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		winWidth, winHeight, sdl.WINDOW_OPENGL)
@@ -40,8 +41,8 @@ func main() {
 	}
 	defer sdl.GLDeleteContext(context)
 
-	//version := gl.GoStr(gl.GetString(gl.VERSION))
-	//println(version)
+	version, _ := sdl.GetCurrentVideoDriver()
+	println(version)
 
 	//println(gl.GetString(gl.VERSION))
 
