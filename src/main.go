@@ -49,9 +49,9 @@ func main() {
 
 	//println(gles2.GetString(gles2.VERSION))
 
-	if err = gles2.Init(); err != nil {
-		panic(err)
-	}
+	//if err = gles2.Init(); err != nil {
+	//	panic(err)
+	//}
 
 	//gles2.Disable(gles2.DEPTH_TEST)
 	//gles2.ClearColor(1, 0.2, 0.3, 1.0)
