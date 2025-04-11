@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-gl/gl/v3.1/gles2"
+	"github.com/go-gl/gl/v3.0/gles2"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
