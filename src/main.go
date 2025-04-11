@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-gl/gl/v3.0/gles2"
+	"github.com/go-gl/gl/all-core/gl"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -22,8 +22,8 @@ func main() {
 	}
 	defer sdl.Quit()
 
-	sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
-	sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 0)
+	//sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
+	//sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 0)
 
 	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		winWidth, winHeight, sdl.WINDOW_OPENGL)
@@ -40,20 +40,20 @@ func main() {
 	}
 	defer sdl.GLDeleteContext(context)
 
-	version := gles2.GoStr(gles2.GetString(gles2.VERSION))
-	println(version)
+	//version := gl.GoStr(gl.GetString(gl.VERSION))
+	//println(version)
 
-	//println(gles2.GetString(gles2.VERSION))
+	//println(gl.GetString(gl.VERSION))
 
-	if err = gles2.Init(); err != nil {
+	if err = gl.Init(); err != nil {
 		panic(err)
 	}
 
-	//gles2.Disable(gles2.DEPTH_TEST)
-	//gles2.ClearColor(1, 0.2, 0.3, 1.0)
-	////gles2.ClearDepth(1)
-	//gles2.DepthFunc(gles2.LEQUAL)
-	//gles2.Viewport(0, 0, int32(winWidth), int32(winHeight))
+	//gl.Disable(gl.DEPTH_TEST)
+	//gl.ClearColor(1, 0.2, 0.3, 1.0)
+	////gl.ClearDepth(1)
+	//gl.DepthFunc(gl.LEQUAL)
+	//gl.Viewport(0, 0, int32(winWidth), int32(winHeight))
 
 	running = true
 	for running {
@@ -65,7 +65,7 @@ func main() {
 				fmt.Printf("[%d ms] MouseMotion\tid:%d\tx:%d\ty:%d\txrel:%d\tyrel:%d\n", t.Timestamp, t.Which, t.X, t.Y, t.XRel, t.YRel)
 			}
 		}
-		//gles2.DrawArrays(gles2.TRIANGLES, 0, 0)
+		//gl.DrawArrays(gl.TRIANGLES, 0, 0)
 		drawgl()
 		window.GLSwap()
 		sdl.Delay(1)
@@ -73,15 +73,15 @@ func main() {
 }
 
 func drawgl() {
-	gles2.Clear(gles2.COLOR_BUFFER_BIT)
-	gles2.ClearColor(0, 1, 0.3, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.ClearColor(0, 1, 0.3, 1.0)
 
-	//gles2.Begin(gles2.TRIANGLES)
-	//gles2.Color3f(1.0, 0.0, 0.0)
-	//gles2.Vertex2f(0.5, 0.0)
-	//gles2.Color3f(0.0, 1.0, 0.0)
-	//gles2.Vertex2f(-0.5, -0.5)
-	//gles2.Color3f(0.0, 0.0, 1.0)
-	//gles2.Vertex2f(-0.5, 0.5)
-	//gles2.End()
+	//gl.Begin(gl.TRIANGLES)
+	//gl.Color3f(1.0, 0.0, 0.0)
+	//gl.Vertex2f(0.5, 0.0)
+	//gl.Color3f(0.0, 1.0, 0.0)
+	//gl.Vertex2f(-0.5, -0.5)
+	//gl.Color3f(0.0, 0.0, 1.0)
+	//gl.Vertex2f(-0.5, 0.5)
+	//gl.End()
 }
