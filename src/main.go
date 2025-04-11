@@ -27,8 +27,8 @@ func main() {
 	}
 
 	sdl.GLSetAttribute(sdl.GL_CONTEXT_PROFILE_MASK, sdl.GL_CONTEXT_PROFILE_ES)
-	//sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
-	//sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 0)
+	sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
+	sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 0)
 	//sdl.SetHint(sdl.HINT_RENDER_DRIVER, "1")
 	sdl.GLSetAttribute(sdl.GL_DOUBLEBUFFER, 1)
 	sdl.GLSetAttribute(sdl.GL_DEPTH_SIZE, 24)
@@ -48,6 +48,8 @@ func main() {
 		panic(err)
 	}
 	defer sdl.GLDeleteContext(context)
+
+	window.GLMakeCurrent(context)
 
 	version, _ := sdl.GetCurrentVideoDriver()
 	println(version)
