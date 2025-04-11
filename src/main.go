@@ -37,6 +37,8 @@ func main() {
 	}
 	defer sdl.GLDeleteContext(context)
 
+	println(gles2.GetString(gles2.VERSION))
+
 	if err = gles2.Init(); err != nil {
 		panic(err)
 	}
