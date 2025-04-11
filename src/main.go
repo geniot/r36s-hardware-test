@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/go-gl/gl/v3.3-core/gl"
+	"github.com/go-gl/gl/v3.1/gles2"
 	"github.com/go-gl/glfw/v3.3/glfw"
 
 	"fmt"
@@ -57,12 +57,12 @@ func main() {
 	window.SetFramebufferSizeCallback(onResize)
 
 	// gl: initialize
-	if err := gl.Init(); err != nil {
+	if err := gles2.Init(); err != nil {
 		fail("init GL", err, -1)
 		return
 	}
 
-	version := gl.GoStr(gl.GetString(gl.VERSION))
+	version := gles2.GoStr(gles2.GetString(gles2.VERSION))
 	fmt.Println("OpenGL version", version)
 
 	// create shader program
@@ -91,28 +91,28 @@ func main() {
 	// 	EBO
 	// }
 
-	gl.GenVertexArrays(1, &VAO)
-	gl.GenBuffers(1, &VBO)
-	gl.GenBuffers(1, &EBO)
+	gles2.GenVertexArrays(1, &VAO)
+	gles2.GenBuffers(1, &VBO)
+	gles2.GenBuffers(1, &EBO)
 	// bind the Vertex Array Object first,
 	// then bind and set vetex buffer(s),
 	// and then configure vertex attributes(s).
-	gl.BindVertexArray(VAO)
+	gles2.BindVertexArray(VAO)
 
-	gl.BindBuffer(gl.ARRAY_BUFFER, VBO)
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*4, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gles2.BindBuffer(gles2.ARRAY_BUFFER, VBO)
+	gles2.BufferData(gles2.ARRAY_BUFFER, len(vertices)*4, gles2.Ptr(vertices), gles2.STATIC_DRAW)
 
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, EBO)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, len(indices)*4, gl.Ptr(indices), gl.STATIC_DRAW)
+	gles2.BindBuffer(gles2.ELEMENT_ARRAY_BUFFER, EBO)
+	gles2.BufferData(gles2.ELEMENT_ARRAY_BUFFER, len(indices)*4, gles2.Ptr(indices), gles2.STATIC_DRAW)
 
-	gl.VertexAttribPointer(aPos, 3, gl.FLOAT, false, 3*4, gl.Ptr(nil))
-	gl.EnableVertexAttribArray(aPos)
+	gles2.VertexAttribPointer(aPos, 3, gles2.FLOAT, false, 3*4, gles2.Ptr(nil))
+	gles2.EnableVertexAttribArray(aPos)
 
 	// note that this is allowed,
 	// the call to glVertexAttribPointer registered VBO
 	// as the vertex attribute's bound vertex buffer object
 	// so afterwards we can safely unbind
-	gl.BindBuffer(gl.ARRAY_BUFFER, 0) // VBO
+	gles2.BindBuffer(gles2.ARRAY_BUFFER, 0) // VBO
 
 	// remember: do NOT unbind the EBO while a VAO is active
 	// as the bound element buffer object IS stored in the VAO;
@@ -124,21 +124,21 @@ func main() {
 	// but this rarely happens.
 	// Modifying other VAOs requires a call to glBindVertexArray anyways
 	// so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-	gl.BindVertexArray(0) // VAO
+	gles2.BindVertexArray(0) // VAO
 
 	// render loop
 	for !window.ShouldClose() {
 
 		// render
-		gl.ClearColor(0.2, 0.3, 0.3, 1.0)
-		gl.Clear(gl.COLOR_BUFFER_BIT)
+		gles2.ClearColor(0.2, 0.3, 0.3, 1.0)
+		gles2.Clear(gles2.COLOR_BUFFER_BIT)
 
 		// draw out first triangle
-		gl.UseProgram(program)
-		gl.BindVertexArray(VAO)
+		gles2.UseProgram(program)
+		gles2.BindVertexArray(VAO)
 		// seeing as we only have a single VAO there's no need to bind
 		// it every time, but we'll do so to keep things a bit more organized
-		gl.DrawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, gl.Ptr(nil))
+		gles2.DrawElements(gles2.TRIANGLES, 3, gles2.UNSIGNED_INT, gles2.Ptr(nil))
 
 		// swap buffers and poll IO events
 		window.SwapBuffers()
@@ -146,48 +146,48 @@ func main() {
 
 	}
 
-	gl.DeleteVertexArrays(1, &VAO)
-	gl.DeleteBuffers(1, &VBO)
-	gl.DeleteBuffers(1, &EBO)
+	gles2.DeleteVertexArrays(1, &VAO)
+	gles2.DeleteBuffers(1, &VBO)
+	gles2.DeleteBuffers(1, &EBO)
 
 }
 
 func createProgram(vertexShaderSource, fragmentShaderSource string) uint32 {
 	// compile shaders
-	vertexShader := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
-	fragmentShader := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
+	vertexShader := compileShader(vertexShaderSource, gles2.VERTEX_SHADER)
+	fragmentShader := compileShader(fragmentShaderSource, gles2.FRAGMENT_SHADER)
 
 	// link shaders
-	program := gl.CreateProgram()
-	gl.AttachShader(program, vertexShader)
-	gl.AttachShader(program, fragmentShader)
-	gl.LinkProgram(program)
+	program := gles2.CreateProgram()
+	gles2.AttachShader(program, vertexShader)
+	gles2.AttachShader(program, fragmentShader)
+	gles2.LinkProgram(program)
 
 	//infoLog := getProgramLog(program)
 	//var status int32
-	//if gl.GetProgramiv(program, gl.LINK_STATUS, &status); status == gl.FALSE {
+	//if gles2.GetProgramiv(program, gles2.LINK_STATUS, &status); status == gles2.FALSE {
 	//	fail("link program "+infoLog, nil, -3)
 	//} else {
 	//	fmt.Printf("log of program:\n%s\n", infoLog)
 	//}
 
-	gl.DeleteShader(vertexShader)
-	gl.DeleteShader(fragmentShader)
+	gles2.DeleteShader(vertexShader)
+	gles2.DeleteShader(fragmentShader)
 
 	return program
 }
 
 func compileShader(shaderSrc string, shaderType uint32) uint32 {
-	csources, free := gl.Strs(shaderSrc)
+	csources, free := gles2.Strs(shaderSrc)
 	defer free()
-	shader := gl.CreateShader(shaderType)
-	gl.ShaderSource(shader, 1, csources, nil)
-	gl.CompileShader(shader)
+	shader := gles2.CreateShader(shaderType)
+	gles2.ShaderSource(shader, 1, csources, nil)
+	gles2.CompileShader(shader)
 
 	// check for compile errors
 	//infoLog := getShaderLog(shader)
 	//var status int32
-	//if gl.GetShaderiv(shader, gl.COMPILE_STATUS, &status); status == gl.FALSE {
+	//if gles2.GetShaderiv(shader, gles2.COMPILE_STATUS, &status); status == gles2.FALSE {
 	//	fail("compile "+shaderTypeToString(shaderType)+" shader "+infoLog, nil, -2)
 	//} else {
 	//	fmt.Printf("log of %s shader:\n%s\n", shaderTypeToString(shaderType), infoLog)
@@ -197,24 +197,24 @@ func compileShader(shaderSrc string, shaderType uint32) uint32 {
 
 func getShaderLog(shader uint32) string {
 	var logLen int32
-	gl.GetShaderiv(shader, gl.INFO_LOG_LENGTH, &logLen)
+	gles2.GetShaderiv(shader, gles2.INFO_LOG_LENGTH, &logLen)
 	infoLog := strings.Repeat("\x00", int(logLen))
-	gl.GetShaderInfoLog(shader, logLen, nil, gl.Str(infoLog))
+	gles2.GetShaderInfoLog(shader, logLen, nil, gles2.Str(infoLog))
 	return infoLog
 }
 
 func getProgramLog(program uint32) string {
 	var logLen int32
-	gl.GetProgramiv(program, gl.INFO_LOG_LENGTH, &logLen)
+	gles2.GetProgramiv(program, gles2.INFO_LOG_LENGTH, &logLen)
 	infoLog := strings.Repeat("\x00", int(logLen))
-	gl.GetProgramInfoLog(program, logLen, nil, gl.Str(infoLog))
+	gles2.GetProgramInfoLog(program, logLen, nil, gles2.Str(infoLog))
 	return infoLog
 }
 
 func shaderTypeToString(shaderType uint32) string {
 	shaderTypeStr := (map[uint32]string{
-		gl.VERTEX_SHADER:   "vertex",
-		gl.FRAGMENT_SHADER: "fragment",
+		gles2.VERTEX_SHADER:   "vertex",
+		gles2.FRAGMENT_SHADER: "fragment",
 	})[shaderType]
 	return shaderTypeStr
 }
