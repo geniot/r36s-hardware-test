@@ -9,3 +9,5 @@ require (
 	github.com/tevino/abool/v2 v2.1.0
 	github.com/veandco/go-sdl2 v0.4.40
 )
+
+require github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728 // indirect
