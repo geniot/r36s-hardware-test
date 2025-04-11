@@ -40,6 +40,9 @@ func main() {
 	}
 	defer sdl.GLDeleteContext(context)
 
+	version := gles2.GoStr(gles2.GetString(gles2.VERSION))
+	println(version)
+
 	//println(gles2.GetString(gles2.VERSION))
 
 	if err = gles2.Init(); err != nil {
