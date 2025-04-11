@@ -55,6 +55,7 @@ func main() {
 				fmt.Printf("[%d ms] MouseMotion\tid:%d\tx:%d\ty:%d\txrel:%d\tyrel:%d\n", t.Timestamp, t.Which, t.X, t.Y, t.XRel, t.YRel)
 			}
 		}
+		gles2.DrawArrays(gles2.TRIANGLES, 0, 0)
 		drawgl()
 		window.GLSwap()
 		sdl.Delay(1)
