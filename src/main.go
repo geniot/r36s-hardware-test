@@ -22,16 +22,16 @@ func main() {
 	}
 	defer sdl.Quit()
 
-	sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
-	sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 2)
-	sdl.GLSetAttribute(sdl.GL_CONTEXT_PROFILE_MASK, sdl.GL_CONTEXT_PROFILE_COMPATIBILITY)
-
 	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		winWidth, winHeight, sdl.WINDOW_OPENGL)
 	if err != nil {
 		panic(err)
 	}
 	defer window.Destroy()
+
+	sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
+	sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 2)
+	sdl.GLSetAttribute(sdl.GL_CONTEXT_PROFILE_MASK, sdl.GL_CONTEXT_PROFILE_COMPATIBILITY)
 	//if _, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED); err != nil {
 	//	panic(err)
 	//}
