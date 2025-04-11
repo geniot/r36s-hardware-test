@@ -23,14 +23,14 @@ func main() {
 	defer sdl.Quit()
 
 	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		winWidth, winHeight, sdl.WINDOW_OPENGL|sdl.WINDOW_BORDERLESS)
+		winWidth, winHeight, sdl.WINDOW_OPENGL)
 	if err != nil {
 		panic(err)
 	}
 	defer window.Destroy()
-	if _, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED); err != nil {
-		panic(err)
-	}
+	//if _, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED); err != nil {
+	//	panic(err)
+	//}
 	context, err = window.GLCreateContext()
 	if err != nil {
 		panic(err)
@@ -43,11 +43,11 @@ func main() {
 		panic(err)
 	}
 
-	gles2.Disable(gles2.DEPTH_TEST)
-	gles2.ClearColor(1, 0.2, 0.3, 1.0)
-	//gles2.ClearDepth(1)
-	gles2.DepthFunc(gles2.LEQUAL)
-	gles2.Viewport(0, 0, int32(winWidth), int32(winHeight))
+	//gles2.Disable(gles2.DEPTH_TEST)
+	//gles2.ClearColor(1, 0.2, 0.3, 1.0)
+	////gles2.ClearDepth(1)
+	//gles2.DepthFunc(gles2.LEQUAL)
+	//gles2.Viewport(0, 0, int32(winWidth), int32(winHeight))
 
 	running = true
 	for running {
@@ -59,7 +59,7 @@ func main() {
 				fmt.Printf("[%d ms] MouseMotion\tid:%d\tx:%d\ty:%d\txrel:%d\tyrel:%d\n", t.Timestamp, t.Which, t.X, t.Y, t.XRel, t.YRel)
 			}
 		}
-		gles2.DrawArrays(gles2.TRIANGLES, 0, 0)
+		//gles2.DrawArrays(gles2.TRIANGLES, 0, 0)
 		drawgl()
 		window.GLSwap()
 		sdl.Delay(1)
