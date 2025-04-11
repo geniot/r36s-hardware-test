@@ -4,13 +4,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-gl/gl/v3.0/gles2"
+	"github.com/go-gl/gl/v3.1/gles2"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
 func main() {
 	var winTitle string = "Go-SDL2 + Go-GL"
-	var winWidth, winHeight int32 = 640, 480
+	var winWidth, winHeight int32 = 800, 600
 	var window *sdl.Window
 	var context sdl.GLContext
 	var event sdl.Event
@@ -23,7 +23,7 @@ func main() {
 	defer sdl.Quit()
 
 	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		winWidth, winHeight, sdl.WINDOW_OPENGL|sdl.WINDOW_BORDERLESS|sdl.WINDOW_SHOWN)
+		winWidth, winHeight, sdl.WINDOW_OPENGL)
 	if err != nil {
 		panic(err)
 	}
@@ -61,6 +61,7 @@ func main() {
 
 func drawgl() {
 	gles2.Clear(gles2.COLOR_BUFFER_BIT | gles2.DEPTH_BUFFER_BIT)
+	gles2.ClearColor(0, 1, 0.3, 1.0)
 
 	//gles2.Begin(gles2.TRIANGLES)
 	//gles2.Color3f(1.0, 0.0, 0.0)
