@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-gl/gl/v3.2-core/gl"
+	"github.com/go-gl/gl/v3.2-compatibility/gl"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -22,8 +22,8 @@ func main() {
 	}
 	defer sdl.Quit()
 
-	//sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
-	//sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 0)
+	sdl.GLSetAttribute(sdl.GL_CONTEXT_MAJOR_VERSION, 3)
+	sdl.GLSetAttribute(sdl.GL_CONTEXT_MINOR_VERSION, 2)
 
 	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		winWidth, winHeight, sdl.WINDOW_OPENGL)
