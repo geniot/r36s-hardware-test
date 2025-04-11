@@ -11,7 +11,7 @@ import (
 
 func main() {
 	var winTitle string = "Go-SDL2 + Go-GL"
-	var winWidth, winHeight int32 = 800, 600
+	var winWidth, winHeight int32 = 640, 480
 	var window *sdl.Window
 	var context sdl.GLContext
 	var event sdl.Event
@@ -23,8 +23,8 @@ func main() {
 	}
 	defer sdl.Quit()
 
-	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		winWidth, winHeight, sdl.WINDOW_OPENGL|sdl.WINDOW_FULLSCREEN)
+	window, err = sdl.CreateWindow(winTitle, 0, 0,
+		winWidth, winHeight, sdl.WINDOW_OPENGL|sdl.WINDOW_BORDERLESS|sdl.WINDOW_SHOWN)
 	if err != nil {
 		panic(err)
 	}
