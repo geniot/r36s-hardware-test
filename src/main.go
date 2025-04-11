@@ -28,6 +28,7 @@ func main() {
 		panic(err)
 	}
 	defer window.Destroy()
+	sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
 	context, err = window.GLCreateContext()
 	if err != nil {
 		panic(err)
