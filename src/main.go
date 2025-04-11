@@ -4,7 +4,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-gl/gl/v2.1/gl"
+	"github.com/go-gl/gl/v3.0/gles2"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
@@ -22,7 +22,7 @@ func main() {
 	}
 	defer sdl.Quit()
 
-	window, err = sdl.CreateWindow(winTitle, 0, 0,
+	window, err = sdl.CreateWindow(winTitle, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		winWidth, winHeight, sdl.WINDOW_OPENGL|sdl.WINDOW_BORDERLESS|sdl.WINDOW_SHOWN)
 	if err != nil {
 		panic(err)
@@ -34,15 +34,15 @@ func main() {
 	}
 	defer sdl.GLDeleteContext(context)
 
-	if err = gl.Init(); err != nil {
+	if err = gles2.Init(); err != nil {
 		panic(err)
 	}
 
-	gl.Enable(gl.DEPTH_TEST)
-	gl.ClearColor(0.2, 0.2, 0.3, 1.0)
-	gl.ClearDepth(1)
-	gl.DepthFunc(gl.LEQUAL)
-	gl.Viewport(0, 0, int32(winWidth), int32(winHeight))
+	gles2.Enable(gles2.DEPTH_TEST)
+	gles2.ClearColor(1, 0.2, 0.3, 1.0)
+	//gles2.ClearDepth(1)
+	gles2.DepthFunc(gles2.LEQUAL)
+	gles2.Viewport(0, 0, int32(winWidth), int32(winHeight))
 
 	running = true
 	for running {
@@ -60,14 +60,14 @@ func main() {
 }
 
 func drawgl() {
-	gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+	gles2.Clear(gles2.COLOR_BUFFER_BIT | gles2.DEPTH_BUFFER_BIT)
 
-	gl.Begin(gl.TRIANGLES)
-	gl.Color3f(1.0, 0.0, 0.0)
-	gl.Vertex2f(0.5, 0.0)
-	gl.Color3f(0.0, 1.0, 0.0)
-	gl.Vertex2f(-0.5, -0.5)
-	gl.Color3f(0.0, 0.0, 1.0)
-	gl.Vertex2f(-0.5, 0.5)
-	gl.End()
+	//gles2.Begin(gles2.TRIANGLES)
+	//gles2.Color3f(1.0, 0.0, 0.0)
+	//gles2.Vertex2f(0.5, 0.0)
+	//gles2.Color3f(0.0, 1.0, 0.0)
+	//gles2.Vertex2f(-0.5, -0.5)
+	//gles2.Color3f(0.0, 0.0, 1.0)
+	//gles2.Vertex2f(-0.5, 0.5)
+	//gles2.End()
 }
