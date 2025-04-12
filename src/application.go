@@ -16,7 +16,7 @@ type Application struct {
 	joysticks          [16]*sdl.Joystick
 	pressedKeysCodes   mapset.Set[sdl.Keycode]
 	pressedButtonCodes mapset.Set[ButtonCode]
-	axisValues         [4]float32
+	axisValues         [20]float32
 	isRunning          *abool.AtomicBool
 }
 
@@ -133,7 +133,7 @@ func (app *Application) UpdateView() {
 		println(err.Error())
 	}
 	app.renderJoystick(BUTTON_CODE_LEFT_JOYSTICK, Reactors[BUTTON_CODE_LEFT_JOYSTICK].OffsetX, Reactors[BUTTON_CODE_LEFT_JOYSTICK].OffsetY, app.axisValues[0], app.axisValues[1], sdl.K_l)
-	app.renderJoystick(BUTTON_CODE_RIGHT_JOYSTICK, Reactors[BUTTON_CODE_RIGHT_JOYSTICK].OffsetX, Reactors[BUTTON_CODE_RIGHT_JOYSTICK].OffsetY, app.axisValues[2], app.axisValues[3], sdl.K_r)
+	app.renderJoystick(BUTTON_CODE_RIGHT_JOYSTICK, Reactors[BUTTON_CODE_RIGHT_JOYSTICK].OffsetX, Reactors[BUTTON_CODE_RIGHT_JOYSTICK].OffsetY, app.axisValues[3], app.axisValues[4], sdl.K_r)
 
 	for val := range app.pressedButtonCodes.Iter() {
 		if Reactors[val] != nil {
